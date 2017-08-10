@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/holo_red_light"
+    android:orientation="horizontal"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
+    <EditText
+        android:id="@+id/ed_search"
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="10dp"
+        android:layout_weight="1"
+        android:background="@drawable/search_bar_shape"
+        android:drawableLeft="@drawable/home_search_icon"
+        android:drawablePadding="5dp"
+        android:hint="input search"
+        android:padding="5dp" />
+
+    <Button
+        android:id="@+id/messageBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_red_light"
+        android:drawableTop="@drawable/new_message_icon"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:text="Message"
+        android:textSize="12sp"
+        android:textColor="@android:color/white" />
+
+</LinearLayout>

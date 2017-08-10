@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:padding="10dp"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:paddingTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/home_arrow_left_new"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:text="新品推荐" />
+
+
+        <TextView
+            android:id="@+id/tvMore"
+            android:clickable="true"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="查看更多" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/home_arrow_right" />
+    </LinearLayout>
+    <GridView
+        android:id="@+id/recommendGV"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:numColumns="3"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"/>
+</LinearLayout>
