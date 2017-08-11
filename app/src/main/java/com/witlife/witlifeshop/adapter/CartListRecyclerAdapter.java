@@ -1,6 +1,7 @@
 package com.witlife.witlifeshop.adapter;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -26,26 +28,43 @@ import java.util.List;
  * Created by bruce on 10/08/2017.
  */
 
-public class CartListRecyclerAdapter extends RecyclerView.Adapter<CartListViewHolder>  {
+public class CartListRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
 
     private final List<GoodsBean> goodsBeans;
     private Context context;
-    private OnItemClickListener listener;
+    private OnItemClickListener listener = null;
     private TextView tvTotal;
-    private CheckBox allChecked;
-    private boolean isAllChecked = true;
+    private CheckBox allCheckbox;
 
-    public CartListRecyclerAdapter(Context context, List<GoodsBean> goodsBeans, TextView tvTotal, CheckBox allChecked) {
+    public CartListRecyclerAdapter(Context context, final List<GoodsBean> goodsBeans, TextView tvTotal, final CheckBox allChecked) {
         this.context = context;
         this.goodsBeans = goodsBeans;
         this.tvTotal = tvTotal;
-        this.allChecked = allChecked;
+        this.allCheckbox = allChecked;
 
-        allChecked.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onItemClick(View view, int position) {
+                GoodsBean goodsBean = goodsBeans.get(position);
+                goodsBean.setIsChildSelected(!goodsBean.isChildSelected());
+                notifyItemChanged(position);
+                allCheckbox.setChecked(true);
+                for(int i = 0; i< goodsBeans.size();i++){
+                        if(!goodsBeans.get(i).isChildSelected()) {
+                            allCheckbox.setChecked(false);
+                            break;
+                        }
+                }
+                CartBean.getInstance().UpdateData(goodsBean);
+                showTotalPrice();
+            }
+        });
+
+        allCheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isChecked = allCheckbox.isChecked();
                 allItemsCheckState(isChecked);
-                Log.e("All checkbox", isChecked+"");
                 showTotalPrice();
             }
         });
@@ -55,24 +74,23 @@ public class CartListRecyclerAdapter extends RecyclerView.Adapter<CartListViewHo
         if (goodsBeans != null && goodsBeans.size()> 0){
             for(int i = 0; i < goodsBeans.size(); i++){
                 goodsBeans.get(i).setIsChildSelected(isChecked);
-                Log.e("checkbox"+i, isChecked+"");
                 notifyItemChanged(i);
             }
-           // notifyDataSetChanged();
+            allCheckbox.setChecked(isChecked);
         }
-
     }
 
     @Override
-    public CartListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_cart, null);//??
 
         return new CartListViewHolder(view, listener);
     }
 
     @Override
-    public void onBindViewHolder(final CartListViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, int position) {
         final GoodsBean item = goodsBeans.get(position);
+        CartListViewHolder holder = (CartListViewHolder)viewHolder;
 
         holder.tvPrice.setText("$" + item.getCover_price());
         holder.tvTitle.setText(item.getName());
@@ -81,39 +99,7 @@ public class CartListRecyclerAdapter extends RecyclerView.Adapter<CartListViewHo
                 .into(holder.imageview);
         holder.numberView.setValue(item.getNumber());
 
-        if (item.isChildSelected()) {
-            holder.checkbox.setChecked(true);
-        } else {
-            holder.checkbox.setChecked(false);
-            isAllChecked = false;
-            allChecked.setChecked(false);
-        }
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(item.isChildSelected()) {
-                    item.setIsChildSelected(false);
-                    holder.checkbox.setChecked(false);
-                    allChecked.setChecked(false);
-                } else {
-                    item.setIsChildSelected(true);
-                    holder.checkbox.setChecked(true);
-                    allChecked.setChecked(true);
-                    for(int i = 0; i< goodsBeans.size();i++){
-                        if(!goodsBeans.get(i).isChildSelected()) {
-                            allChecked.setChecked(false);
-                            break;
-                        }
-                    }
-                }
-
-                CartBean.getInstance().UpdateData(item);
-                showTotalPrice();
-                notifyDataSetChanged();
-            }
-        });
+        holder.checkbox.setChecked(item.isChildSelected());
 
         holder.numberView.setOnNumberChangeListener(new NumberChangerSubView.OnNumberChangeListener() {
             @Override
@@ -121,7 +107,6 @@ public class CartListRecyclerAdapter extends RecyclerView.Adapter<CartListViewHo
                 item.setNumber(value);
                 CartBean.getInstance().UpdateData(item);
                 showTotalPrice();
-                notifyDataSetChanged();
             }
 
             @Override
@@ -129,7 +114,6 @@ public class CartListRecyclerAdapter extends RecyclerView.Adapter<CartListViewHo
                 item.setNumber(value);
                 CartBean.getInstance().UpdateData(item);
                 showTotalPrice();
-                notifyDataSetChanged();
             }
         });
     }
@@ -153,10 +137,10 @@ public class CartListRecyclerAdapter extends RecyclerView.Adapter<CartListViewHo
 
 
     public interface OnItemClickListener{
-       void onItemClick(View view, int position);//??
+       void onItemClick(View view, int position);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener ){
-        this.listener = listener;
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.listener = onItemClickListener;
     }
 }

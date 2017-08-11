@@ -64,22 +64,18 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
             recyclerView.addItemDecoration(divider);
 
             showTotalPrice();
-
-            adapter.setOnItemClickListener(new CartListRecyclerAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(View view, int position) {
-                    /*GoodsBean item = goodsBeans.get(position);
-                    if (item.isChildSelected()) {
-                        item.setIsChildSelected(false);
-                    } else {
-                        item.setIsChildSelected(true);
-                    }*/
-                    //radioChoose
-                }
-            });
-
         }
+        initAllCheckbox();
+    }
 
+    private void initAllCheckbox() {
+
+        for(int i = 0; i< goodsBeans.size(); i++){
+            if(!goodsBeans.get(i).isChildSelected()){
+                allChecked.setChecked(false);
+                break;
+            }
+        }
     }
 
     private void showTotalPrice() {
