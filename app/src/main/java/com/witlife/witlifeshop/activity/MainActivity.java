@@ -1,8 +1,12 @@
 package com.witlife.witlifeshop.activity;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TabHost;
@@ -32,17 +36,49 @@ public class MainActivity extends AppCompatActivity {
         initTab();
 
         initTabHost();
+
+        initNotification();
+    }
+
+    private void initNotification() {
+        //NotificationCompat.Builder builder;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create channel to show notifications.
+            String channelId = getString(R.string.default_notification_channel_id);
+            String channelName = getString(R.string.default_notification_channel_name);
+            NotificationManager notificationManager =
+                    getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(new NotificationChannel(channelId,
+                    channelName, NotificationManager.IMPORTANCE_LOW));
+            /*NotificationChannal channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription(channelDescription);
+
+            builder = new NotificationCompat.Builder(context, channelId);
+        } else {
+            builder = new NotificationCompat.Builder(context);
+
+        }*/
+
+            if (getIntent().getExtras() != null) {
+                for (String key : getIntent().getExtras().keySet()) {
+                    Object value = getIntent().getExtras().get(key);
+                    //Log.d(TAG, "Key: " + key + " Value: " + value);
+                }
+            }
+
+        }
     }
 
     private void initTabHost() {
         tabHost = (FragmentTabHost) findViewById(R.id.tabHost);
         tabHost.setup(this, getSupportFragmentManager(), R.id.tab_container);
 
-        for (int i = 0; i <tabs.size(); i++){
+        for (int i = 0; i < tabs.size(); i++) {
             Tab tab = tabs.get(i);
             TabHost.TabSpec tabSpec = tabHost.newTabSpec(tab.getTitle());
             tabSpec.setIndicator(initIndicator(tab.getIcon(), tab.getTitle()));
-            tabHost.addTab(tabSpec,tab.getFragment(), null);
+            tabHost.addTab(tabSpec, tab.getFragment(), null);
         }
 
         tabHost.setCurrentTab(0);
@@ -58,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private View initIndicator(int icon, String title){
+    private View initIndicator(int icon, String title) {
         ImageView imageview;
         TextView tvTitle;
 
@@ -71,8 +107,8 @@ public class MainActivity extends AppCompatActivity {
         return view;
     }
 
-    public FragmentTabHost getTabHost(){
-        if(tabHost != null){
+    public FragmentTabHost getTabHost() {
+        if (tabHost != null) {
             return tabHost;
         } else return null;
 
