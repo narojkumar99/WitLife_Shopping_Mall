@@ -5,14 +5,14 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.witlife.witlifeshop.adapter.CartListRecyclerAdapter;
 import com.witlife.witlifeshop.base.BaseFragment;
@@ -40,6 +40,7 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
     private boolean isEditStatus = true;
 
     private List<GoodsBean> goodsBeans;
+    CartListRecyclerAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,7 +57,7 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
         goodsBeans = CartBean.getInstance().getAllData();
 
         if(goodsBeans != null && goodsBeans.size() > 0){
-            CartListRecyclerAdapter adapter = new CartListRecyclerAdapter(getContext(), goodsBeans, tvTotal, allChecked);
+            adapter = new CartListRecyclerAdapter(getContext(), goodsBeans, tvTotal, allChecked);
             recyclerView.setAdapter(adapter);
             LinearLayoutManager manager = new LinearLayoutManager(getContext());
             recyclerView.setLayoutManager(manager);
@@ -66,16 +67,13 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
             showTotalPrice();
         }
         initAllCheckbox();
+        Log.e("fragment--ALL BOX", allChecked.isChecked()+"");
     }
 
     private void initAllCheckbox() {
-
-        for(int i = 0; i< goodsBeans.size(); i++){
-            if(!goodsBeans.get(i).isChildSelected()){
-                allChecked.setChecked(false);
-                break;
-            }
-        }
+        if(goodsBeans != null && goodsBeans.size() >0){
+            adapter.checkAllItemCheckbox();
+        } else allChecked.setChecked(false);
     }
 
     private void showTotalPrice() {
@@ -87,7 +85,7 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
 
             }
         }
-        tvTotal.setText(String.valueOf(total));
+        tvTotal.setText("$" + String.valueOf(total));
     }
 
     private void bindView(View view) {
@@ -106,12 +104,6 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
         calBtn.setOnClickListener(this);
         deleteBtn.setOnClickListener(this);
         collectBtn.setOnClickListener(this);
-        /*allChecked.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-            }
-        });*/
     }
 
     @Override
@@ -122,8 +114,14 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
                 setEditButtonState();
                 break;
             case R.id.calBtn:
+                Toast.makeText(getContext(), "结算", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.deleteBtn:
+                adapter.deleteBean();
+                showTotalPrice();
+                if(goodsBeans != null && goodsBeans.size() >0){
+                    adapter.checkAllItemCheckbox();
+                } else allChecked.setChecked(false);
                 break;
             case R.id.collectBtn:
                 break;
@@ -136,7 +134,6 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
         if (isEditStatus) {
             isEditStatus = false;
             editBtn.setText("完成");
-            //allChecked.setChecked(false);
             calBtn.setVisibility(View.GONE);
             textView.setVisibility(View.GONE);
             tvTotal.setVisibility(View.GONE);
@@ -145,7 +142,6 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
         } else {
             isEditStatus = true;
             editBtn.setText("编辑");
-            //allChecked.setChecked(true);
             calBtn.setVisibility(View.VISIBLE);
             textView.setVisibility(View.VISIBLE);
             tvTotal.setVisibility(View.VISIBLE);

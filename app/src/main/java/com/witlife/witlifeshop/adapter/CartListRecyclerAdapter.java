@@ -22,6 +22,7 @@ import com.witlife.witlifeshop.utils.Constants;
 import com.witlife.witlifeshop.view.CartListViewHolder;
 import com.witlife.witlifeshop.view.NumberChangerSubView;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -42,19 +43,16 @@ public class CartListRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.tvTotal = tvTotal;
         this.allCheckbox = allChecked;
 
+        Log.e("adapter--ALL BOX", allCheckbox.isChecked()+"");
+        allCheckbox.setChecked(true);
+
         setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 GoodsBean goodsBean = goodsBeans.get(position);
                 goodsBean.setIsChildSelected(!goodsBean.isChildSelected());
                 notifyItemChanged(position);
-                allCheckbox.setChecked(true);
-                for(int i = 0; i< goodsBeans.size();i++){
-                        if(!goodsBeans.get(i).isChildSelected()) {
-                            allCheckbox.setChecked(false);
-                            break;
-                        }
-                }
+                checkAllItemCheckbox();
                 CartBean.getInstance().UpdateData(goodsBean);
                 showTotalPrice();
             }
@@ -70,7 +68,17 @@ public class CartListRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
         });
     }
 
-    private void allItemsCheckState(boolean isChecked) {
+    public void checkAllItemCheckbox() { //setup ALL(checkbox), according to every item's checkbox
+        allCheckbox.setChecked(true);
+        for(int i = 0; i< goodsBeans.size();i++){
+            if(!goodsBeans.get(i).isChildSelected()) {
+                allCheckbox.setChecked(false);
+                break;
+            }
+        }
+    }
+
+    private void allItemsCheckState(boolean isChecked) {// setup every item's checkbox, according to All(checkbox)
         if (goodsBeans != null && goodsBeans.size()> 0){
             for(int i = 0; i < goodsBeans.size(); i++){
                 goodsBeans.get(i).setIsChildSelected(isChecked);
@@ -127,12 +135,28 @@ public class CartListRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
             }
         }
-        tvTotal.setText(String.valueOf(total));
+        tvTotal.setText("$" + String.valueOf(total));
     }
 
     @Override
     public int getItemCount() {
         return goodsBeans.size();
+    }
+
+    public void deleteBean() {
+
+        if(goodsBeans != null && goodsBeans.size() > 0){
+            for(Iterator i = goodsBeans.iterator(); i.hasNext();){
+
+                GoodsBean bean = (GoodsBean) i.next();
+                if(bean.isChildSelected()){
+                    int position = goodsBeans.indexOf(bean);
+                    CartBean.getInstance().deleteData(bean);
+                    i.remove();
+                    notifyItemRemoved(position);
+                }
+            }
+        }
     }
 
 

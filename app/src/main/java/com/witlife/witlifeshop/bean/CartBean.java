@@ -76,8 +76,15 @@ public class CartBean {
     }
 
     public void addGoods(GoodsBean goodsBean) {
+        int key = Integer.parseInt(goodsBean.getProduct_id());
         goodsBean.setIsChildSelected(true);
-        datas.put(Integer.parseInt(goodsBean.getProduct_id()), goodsBean);
+
+        if(datas.get(key) != null){
+            GoodsBean beanInDB = datas.get(key);
+            goodsBean.setNumber(beanInDB.getNumber() + goodsBean.getNumber());
+        }
+
+        datas.put(key, goodsBean);
         commit();
     }
 
@@ -90,6 +97,11 @@ public class CartBean {
 
     public void UpdateData(GoodsBean goodsBean) {
         datas.put(Integer.parseInt(goodsBean.getProduct_id()), goodsBean);
+        commit();
+    }
+
+    public void deleteData(GoodsBean bean) {
+        datas.delete(Integer.parseInt(bean.getProduct_id()));
         commit();
     }
 }
