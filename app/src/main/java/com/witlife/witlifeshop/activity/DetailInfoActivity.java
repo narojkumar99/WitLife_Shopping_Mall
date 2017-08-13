@@ -2,6 +2,7 @@ package com.witlife.witlifeshop.activity;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -27,10 +28,13 @@ import com.witlife.witlifeshop.R;
 import com.witlife.witlifeshop.bean.CartBean;
 import com.witlife.witlifeshop.bean.GoodsBean;
 import com.witlife.witlifeshop.activity.MainActivity;
+import com.witlife.witlifeshop.utils.CacheUtils;
 import com.witlife.witlifeshop.utils.Constants;
 import com.witlife.witlifeshop.view.NumberChangerSubView;
 
 import java.util.zip.Inflater;
+
+import cn.sharesdk.onekeyshare.OnekeyShare;
 
 /**
  * Created by bruce on 9/08/2017.
@@ -48,6 +52,9 @@ public class DetailInfoActivity extends AppCompatActivity{
     private Button collectBtn;
     private Button cartBtn;
     private Button addToBtn;
+    private Button bgBtn;
+    private Button shareBtn;
+    private LinearLayout linearlayout;
 
     private CartBean cartBean;
 
@@ -90,6 +97,29 @@ public class DetailInfoActivity extends AppCompatActivity{
             public void onClick(View v) {
                 finish();
                 //MainActivity
+            }
+        });
+
+        moreBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (linearlayout.getVisibility() == View.VISIBLE){
+                    linearlayout.setVisibility(View.GONE);
+                } else linearlayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        bgBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                linearlayout.setVisibility(View.GONE);
+            }
+        });
+
+        shareBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showShare();
             }
         });
     }
@@ -200,5 +230,38 @@ public class DetailInfoActivity extends AppCompatActivity{
         collectBtn = (Button) findViewById(R.id.collectBtn);
         cartBtn = (Button) findViewById(R.id.cartBtn);
         addToBtn = (Button) findViewById(R.id.addToBtn);
+        shareBtn = (Button) findViewById(R.id.shareBtn);
+        bgBtn = (Button) findViewById(R.id.bgBtn);
+        linearlayout = (LinearLayout) findViewById(R.id.linearlayout);
+    }
+
+    private void showShare() {
+        OnekeyShare oks = new OnekeyShare();
+        //关闭sso授权
+        oks.disableSSOWhenAuthorize();
+
+        // 分享时Notification的图标和文字  2.5.9以后的版本不     调用此方法
+        //oks.setNotification(R.drawable.ic_launcher, getString(R.string.app_name));
+        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
+        oks.setTitle(getString(R.string.app_name));
+        // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
+        oks.setTitleUrl("http://sharesdk.cn");
+        // text是分享文本，所有平台都需要这个字段
+        oks.setText(goodsBean.getName());
+        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+        oks.setImageUrl(Constants.BASE_URl_IMAGE + goodsBean.getFigure());
+
+        //oks.setImagePath(Environment.getExternalStorageState()"/sdcard/test.jpg");//确保SDcard下面存在此张图片
+        // url仅在微信（包括好友和朋友圈）中使用
+        oks.setUrl("http://sharesdk.cn");
+        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
+        oks.setComment(goodsBean.getName());
+        // site是分享此内容的网站名称，仅在QQ空间使用
+        oks.setSite(getString(R.string.app_name));
+        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+        oks.setSiteUrl("http://sharesdk.cn");
+
+        // 启动分享GUI
+        oks.show(this);
     }
 }

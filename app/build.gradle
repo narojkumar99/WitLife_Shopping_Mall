@@ -20,7 +20,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -38,6 +38,22 @@ dependencies {
     compile 'com.firebase:firebase-jobdispatcher:0.6.0'
     compile 'com.google.firebase:firebase-messaging:11.0.4'
     testCompile 'junit:junit:4.12'
+    compile files('libs/MobCommons-2017.0801.1522.jar')
+    compile files('libs/MobTools-2017.0801.1522.jar')
+    compile files('libs/ShareSDK-Core-3.0.1.jar')
+    compile files('libs/ShareSDK-Dropbox-3.0.1.jar')
+    compile files('libs/ShareSDK-Email-3.0.1.jar')
+    compile files('libs/ShareSDK-Facebook-3.0.1.jar')
+    compile files('libs/ShareSDK-GooglePlus-3.0.1.jar')
+    compile files('libs/ShareSDK-Linkedin-3.0.1.jar')
+    compile files('libs/ShareSDK-QQ-3.0.1.jar')
+    compile files('libs/ShareSDK-QZone-3.0.1.jar')
+    compile files('libs/ShareSDK-ShortMessage-3.0.1.jar')
+    compile files('libs/ShareSDK-Twitter-3.0.1.jar')
+    compile files('libs/ShareSDK-Wechat-3.0.1.jar')
+    compile files('libs/ShareSDK-Wechat-Core-3.0.1.jar')
+    compile files('libs/ShareSDK-Wechat-Favorite-3.0.1.jar')
+    compile files('libs/ShareSDK-Wechat-Moments-3.0.1.jar')
 }
 
 
