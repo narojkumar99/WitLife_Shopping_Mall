@@ -42,7 +42,7 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
     private List<GoodsBean> goodsBeans;
     CartListRecyclerAdapter adapter;
 
-    @Override
+    /*@Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.cart_fragment, null);
@@ -51,9 +51,14 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
         initView();
         setListener();
         return view;
+    }*/
+
+    @Override
+    protected String getUrl() {
+        return null;
     }
 
-    private void initView() {
+    protected void initView(View view) {
         goodsBeans = CartBean.getInstance().getAllData();
 
         if(goodsBeans != null && goodsBeans.size() > 0){
@@ -67,7 +72,17 @@ public class CartFragment extends BaseFragment implements View.OnClickListener {
             showTotalPrice();
         }
         initAllCheckbox();
-        Log.e("fragment--ALL BOX", allChecked.isChecked()+"");
+        //Log.e("fragment--ALL BOX", allChecked.isChecked()+"");
+    }
+
+    @Override
+    protected void initData(String content) {
+
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.cart_fragment;
     }
 
     private void initAllCheckbox() {

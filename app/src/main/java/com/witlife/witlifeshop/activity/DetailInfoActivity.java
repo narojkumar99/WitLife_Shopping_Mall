@@ -1,10 +1,13 @@
 package com.witlife.witlifeshop.activity;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -28,6 +31,7 @@ import com.witlife.witlifeshop.R;
 import com.witlife.witlifeshop.bean.CartBean;
 import com.witlife.witlifeshop.bean.GoodsBean;
 import com.witlife.witlifeshop.activity.MainActivity;
+import com.witlife.witlifeshop.fragment.CartFragment;
 import com.witlife.witlifeshop.utils.CacheUtils;
 import com.witlife.witlifeshop.utils.Constants;
 import com.witlife.witlifeshop.view.NumberChangerSubView;
@@ -96,7 +100,23 @@ public class DetailInfoActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 finish();
-                //MainActivity
+
+                Fragment fragment = getSupportFragmentManager().findFragmentByTag("Cart");
+
+
+                if(fragment != null) {
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.tab_container, (CartFragment)fragment);
+                    transaction.commit();
+                }
+                /*startActivityFromFragment();
+                Intent intent = new Intent(DetailInfoActivity.this, MainActivity.class);
+                startActivity(intent);
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.tab_container, new CartFragment());
+                transaction.commitAllowingStateLoss();
+                getSupportFragmentManager().executePendingTransactions();*/
+                //getFragmentManager().findFragmentById(R.id.)
             }
         });
 
@@ -263,5 +283,7 @@ public class DetailInfoActivity extends AppCompatActivity{
 
         // 启动分享GUI
         oks.show(this);
+
+        Toast.makeText(this, "Share to success", Toast.LENGTH_LONG).show();
     }
 }

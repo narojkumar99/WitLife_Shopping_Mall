@@ -25,7 +25,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private FragmentTabHost tabHost;
+    private static FragmentTabHost tabHost;
     private List<Tab> tabs;
 
     @Override
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         return view;
     }
 
-    public FragmentTabHost getTabHost() {
+    public static FragmentTabHost getTabHost() {
         if (tabHost != null) {
             return tabHost;
         } else return null;

@@ -72,13 +72,15 @@ public class HttpHelper {
                 if (response.isSuccessful()) {
                     String result = response.body().string();
 
-                    if (callback.mType == String.class){
+                    callbackSuccess(callback, response, result);
+
+                    /*if (callback.mType == String.class){
                         callbackSuccess(callback, response, result);
 
                     } else {
                         Object object = new Gson().fromJson(result, callback.mType);
                         callbackSuccess(callback, response, object);
-                    }
+                    }*/
                 } else {
                     callbackError(callback, response, null);
                 }

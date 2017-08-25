@@ -20,6 +20,7 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
+import com.google.gson.Gson;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -46,87 +47,42 @@ public class MainFragment extends BaseFragment {
 
     private EditText edSearch;
     private Button messageBtn;
-    private View view;
     private RecyclerView recyclerView;
 
     private MainRecyclerAdapter adapter;
 
     private MainFragmentBean.ResultBean resultBean;
 
-    private HttpHelper httpHelper = HttpHelper.getInstance();
-    private String url;
+    protected void initData(String content) {
 
-    public MainFragment() {
+        MainFragmentBean bean = new Gson().fromJson(content, MainFragmentBean.class);
+
+        resultBean = bean.getResult();
+        initRecyclerView();
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        view = inflater.inflate(R.layout.main_fragment, null);
-        context = getContext();
-
-        initData();
-        initView();
-
-        return view;
+    protected int getLayoutId() {
+        return R.layout.main_fragment;
     }
 
-    private void initData() {
-
-        url = Constants.HOME_URL;
-
-        httpHelper.httpGet(url, new BaseCallback<MainFragmentBean>() {
-            @Override
-            public void onBeforeRequest(Request request) {
-
-            }
-
-            @Override
-            public void onFailure(Request request, Exception e) {
-
-            }
-
-            @Override
-            public void onResponse(Response response) {
-
-            }
-
-            @Override
-            public void onSuccess(Response response, MainFragmentBean bean) {
-
-                resultBean = bean.getResult();
-                initRecyclerView();
-            }
-
-            @Override
-            public void onError(Response response, int code, Exception e) {
-            }
-        });
+    @Override
+    protected String getUrl() {
+        return Constants.HOME_URL;
     }
 
-    public void initView() {
-        initSearchBar();
+    public void initView(View view) {
+
+        edSearch = (EditText) view.findViewById(R.id.ed_search);
+        messageBtn = (Button) view.findViewById(R.id.messageBtn);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
     }
 
     private void initRecyclerView() {
 
-        adapter = new MainRecyclerAdapter(context, resultBean);
+        adapter = new MainRecyclerAdapter(getContext(), resultBean);
         recyclerView.setAdapter(adapter);
         GridLayoutManager manager = new GridLayoutManager(context, 1);
         recyclerView.setLayoutManager(manager);
-    }
-
-    private void initSearchBar() {
-        edSearch = (EditText) view.findViewById(R.id.ed_search);
-        messageBtn = (Button) view.findViewById(R.id.messageBtn);
-
-    }
-
-    @Override
-    public void onStop() {
-        // sliderShow.stopAutoCycle();
-        super.onStop();
     }
 }
