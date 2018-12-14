@@ -22,5 +22,5 @@ Finished Feature:
 5. share to social network
 </br>
 <br>
-6. push notification on firebase
+6. push notification on firebases
 </br>
